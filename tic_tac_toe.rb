@@ -9,7 +9,7 @@ class Game
     players.push(player1, player2)
     
     players.cycle(1) do |player|
-      board.play_turn(player.cell(board.gameboard))
+      player.play_turn(board.gameboard, player.cell(board.gameboard))
       board.print_gameboard
       # check_win_condition
 
@@ -30,11 +30,6 @@ class Board
     @gameboard = Array.new(3) { Array.new([' ', ' ', ' ']) }
   end
 
-  def play_turn(array)
-    @gameboard[array[0]][array[1]] = 'X'
-    # gameboard[array[0]][array[1]] = 'O'
-  end
-
   def print_gameboard
     @gameboard.each_with_index do |row, index|
       puts row.to_s
@@ -48,6 +43,14 @@ class Player
 
   def initialize(name)
     @name = name
+  end
+
+  def play_turn(cells, array)
+    if name == 'player1'
+      cells[array[0]][array[1]] = 'X'
+    else
+      cells[array[0]][array[1]] = 'O'
+    end
   end
 
   def cell(cells)
