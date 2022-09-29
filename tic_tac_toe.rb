@@ -1,60 +1,77 @@
-# Create an empty gameboard
-$gameboard = Array.new(3) { Array.new([' ', ' ', ' ']) }
-$player = 1
+class Game
+  def start
+    board = Board.new
+    board.create_board
 
-def game
-  3.times do
-    play_turn(coordinates)
-    print_gameboard
-  end
-end
+    players = []
+    player1 = Player.new("player1")
+    player2 = Player.new("player2")
+    players.push(player1, player2)
+    
+    players.cycle(1) do |player|
+      board.play_turn(player.cell(board.gameboard))
+      board.print_gameboard
+      # check_win_condition
 
-# Get the row and column number from the user and return them
-def coordinates
-  arr = []
-
-  loop do
-    puts "Player #{$player}'s turn. Enter your row number:"
-    x = gets.to_i
-    puts "Player #{$player}'s turn. Enter your column number:"
-    y = gets.to_i
-
-    if !x.between?(0, 2) || y.between?(0, 2)
-      puts 'Out of range'
-    elsif $gameboard[x][y] != ' '
-      puts 'Choose another spot'
-    else
-      arr.push(x)
-      arr.push(y)
-      break
+      # if game_over
+      #   break
+      # end
     end
   end
 
-  arr
+  # def check_win_condition
+  # end
 end
 
-# Mark the symbol on the gameboard
-def play_turn(array)
-  if $player == 1
-    $gameboard[array[0]][array[1]] = 'X'
-    $player = 2
-  else
-    $gameboard[array[0]][array[1]] = 'O'
-    $player = 1
+class Board
+  attr_accessor :gameboard
+
+  def create_board
+    @gameboard = Array.new(3) { Array.new([' ', ' ', ' ']) }
   end
 
-  check_win_condition
-end
+  def play_turn(array)
+    @gameboard[array[0]][array[1]] = 'X'
+    # gameboard[array[0]][array[1]] = 'O'
+  end
 
-def check_win_condition
-end
-
-# Print out the gameboard
-def print_gameboard
-  $gameboard.each_with_index do |row, index|
-    puts row.to_s
-    puts "\n" unless index == $gameboard.length - 1
+  def print_gameboard
+    @gameboard.each_with_index do |row, index|
+      puts row.to_s
+      puts "\n" unless index == gameboard.length - 1
+    end
   end
 end
 
-game
+class Player
+  attr_reader :name
+
+  def initialize(name)
+    @name = name
+  end
+
+  def cell(cells)
+    arr = []
+      loop do
+        puts "#{name}'s turn. Enter your row number:"
+        x = gets.to_i
+        puts "#{name}'s turn. Enter your column number:"
+        y = gets.to_i
+    
+        if !x.between?(0, 2) || !y.between?(0, 2)
+          puts 'Out of range'
+        elsif cells[x][y] != ' '
+          puts 'Choose another spot'
+        else
+          arr.push(x)
+          arr.push(y)
+          break
+        end
+      end
+      arr
+  end
+end
+
+# Start the game
+game = Game.new
+game.start
