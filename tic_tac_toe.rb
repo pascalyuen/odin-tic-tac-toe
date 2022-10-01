@@ -3,7 +3,7 @@ class Game
 
   def start
     @game_over = false
-    @winning_player = nil
+    @winner = nil
 
     board = Board.new
     board.create_board
@@ -19,7 +19,7 @@ class Game
       check_win_condition(board.gameboard)
 
       if @game_over
-        puts "Game over. #{@winning_player} wins!"
+        puts "Game over. #{@winner} wins!"
         break
       end
     end
@@ -47,11 +47,25 @@ class Game
 
         case column.uniq[0]
         when 'X'
-          @winning_player = 'player1'
+          @winner = 'player1'
         when 'O'
-          @winning_player = 'player2'
+          @winner = 'player2'
         end
       end
+    end
+
+    # Check the diagonals
+    diagonal_arr_left = (0..2).collect { |i| wholeboard[i][i] }
+    diagonal_arr_right = (0..2).collect { |j| wholeboard[j][wholeboard.length - 1 - j] }
+
+    if diagonal_arr_left.all?('X') || diagonal_arr_right.all?('X')
+      @game_over = true
+      @winner = 'player1'
+    end
+
+    if diagonal_arr_left.all?('O') || diagonal_arr_right.all?('O')
+      @game_over = true
+      @winner = 'player2'
     end
   end
 end
