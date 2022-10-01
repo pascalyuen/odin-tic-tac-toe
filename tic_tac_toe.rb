@@ -26,14 +26,31 @@ class Game
   end
 
   def check_win_condition(wholeboard)
+    # Check each row of the board
     wholeboard.each do |row|
-      if row.uniq.count == 1 && row.uniq[0] == 'X'
-        @winning_player = 'player1'
+      if row.uniq.count == 1 && row.uniq[0] != ' '
         @game_over = true
+
+        case row.uniq[0]
+        when 'X'
+          @winning_player = 'player1'
+        when 'O'
+          @winning_player = 'player2'
+        end
       end
-      if row.uniq.count == 1 && row.uniq[0] == 'O'
-        @winning_player = 'player2'
+    end
+
+    # Check each column of the board
+    wholeboard.transpose.each do |column|
+      if column.uniq.count == 1 && column.uniq[0] != ' '
         @game_over = true
+
+        case column.uniq[0]
+        when 'X'
+          @winning_player = 'player1'
+        when 'O'
+          @winning_player = 'player2'
+        end
       end
     end
   end
