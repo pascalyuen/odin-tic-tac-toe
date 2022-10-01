@@ -1,5 +1,10 @@
 class Game
+  attr_accessor :game_over
+
   def start
+    @game_over = false
+    @winning_player = nil
+
     board = Board.new
     board.create_board
 
@@ -8,19 +13,30 @@ class Game
     player2 = Player.new("player2")
     players.push(player1, player2)
     
-    players.cycle(1) do |player|
+    players.cycle(nil) do |player|
       player.play_turn(board.gameboard, player.cell(board.gameboard))
       board.print_gameboard
-      # check_win_condition
+      check_win_condition(board.gameboard)
 
-      # if game_over
-      #   break
-      # end
+      if @game_over
+        puts "Game over. #{@winning_player} wins!"
+        break
+      end
     end
   end
 
-  # def check_win_condition
-  # end
+  def check_win_condition(wholeboard)
+    wholeboard.each do |row|
+      if row.uniq.count == 1 && row.uniq[0] == 'X'
+        @winning_player = 'player1'
+        @game_over = true
+      end
+      if row.uniq.count == 1 && row.uniq[0] == 'O'
+        @winning_player = 'player2'
+        @game_over = true
+      end
+    end
+  end
 end
 
 class Board
@@ -53,7 +69,7 @@ class Player
     end
   end
 
-  def cell(cells)
+  def cell(wholeboard)
     arr = []
       loop do
         puts "#{name}'s turn. Enter your row number:"
@@ -63,7 +79,7 @@ class Player
     
         if !x.between?(0, 2) || !y.between?(0, 2)
           puts 'Out of range'
-        elsif cells[x][y] != ' '
+        elsif wholeboard[x][y] != ' '
           puts 'Choose another spot'
         else
           arr.push(x)
