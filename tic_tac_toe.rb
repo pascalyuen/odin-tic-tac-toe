@@ -17,6 +17,7 @@ class Game
       player.play_turn(board.gameboard, player.cell(board.gameboard))
       board.print_gameboard
       check_win_condition(board.gameboard)
+      check_draw(board.gameboard)
 
       if @game_over
         puts "Game over. #{@winner} wins!"
@@ -33,9 +34,9 @@ class Game
 
         case row.uniq[0]
         when 'X'
-          @winning_player = 'player1'
+          @winner = 'player1'
         when 'O'
-          @winning_player = 'player2'
+          @winner = 'player2'
         end
       end
     end
@@ -66,6 +67,13 @@ class Game
     if diagonal_arr_left.all?('O') || diagonal_arr_right.all?('O')
       @game_over = true
       @winner = 'player2'
+    end
+  end
+
+  def check_draw(wholeboard)
+    if wholeboard.flatten.none?(' ')
+      puts "Draw! Game over."
+      return
     end
   end
 end
@@ -104,9 +112,22 @@ class Player
     arr = []
       loop do
         puts "#{name}'s turn. Enter your row number:"
-        x = gets.to_i
+        x = gets.chomp
+        if x.empty?
+          puts "Empty Input"
+          break
+        else
+          x = x.to_i
+        end
+
         puts "#{name}'s turn. Enter your column number:"
-        y = gets.to_i
+        y = gets.chomp
+        if y.empty?
+          puts "Empty Input"
+          break
+        else
+          y = y.to_i
+        end
     
         if !x.between?(0, 2) || !y.between?(0, 2)
           puts 'Out of range'
